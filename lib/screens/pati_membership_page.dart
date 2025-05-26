@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:pati_check/screens/patitagram_page.dart'; // Added import
-import 'package:pati_check/db/database_helper.dart'; // Added DatabaseHelper import
+import 'package:pati_check/screens/patitagram_page.dart';
+import 'package:pati_check/db/database_helper.dart';
 
-class PatiMembershipPage extends StatefulWidget { // Changed to StatefulWidget
+class PatiMembershipPage extends StatefulWidget {
   const PatiMembershipPage({super.key});
 
   @override
-  _PatiMembershipPageState createState() => _PatiMembershipPageState(); // Added createState
+  _PatiMembershipPageState createState() => _PatiMembershipPageState();
 }
 
-class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created State class
-  final _formKey = GlobalKey<FormState>(); // Added GlobalKey for Form validation
+class _PatiMembershipPageState extends State<PatiMembershipPage> {
+  final _formKey = GlobalKey<FormState>();
 
-  // Added TextEditingControllers
-  final TextEditingController _patiAdiController = TextEditingController(); // Original 'Ad Soyad'
-  final TextEditingController _kullaniciAdiController = TextEditingController(); // Original 'Kullanıcı Adı'
+  final TextEditingController _patiAdiController = TextEditingController();
+  final TextEditingController _kullaniciAdiController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final TextEditingController _telefonController = TextEditingController(); // Original 'Telefon Numarası'
+  final TextEditingController _telefonController = TextEditingController();
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
-  void dispose() { // Added dispose method for controllers
+  void dispose() {
     _patiAdiController.dispose();
     _kullaniciAdiController.dispose();
     _emailController.dispose();
@@ -36,13 +37,17 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink[50],
+      appBar: AppBar(
+        title: const Text('Üyelik Oluştur'),
+        backgroundColor:  Colors.pink[100],
+        leading: BackButton(),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 72.0),
-          child: Form( // Wrapped Column with Form
+          child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 40),
                 Center(
@@ -56,24 +61,16 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Center(
-                  child: Text(
-                    'Pati Üyeliği Oluşturun',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                const Text(
+                  'Pati Üyeliği Oluşturun',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                const Center(
-                  child: Text('Lütfen bilgilerinizi giriniz.'),
-                ),
+                const Text('Lütfen bilgilerinizi giriniz.'),
                 const SizedBox(height: 20),
-                TextFormField( // Changed to TextFormField
-                  controller: _patiAdiController, // Linked controller
+                TextFormField(
+                  controller: _patiAdiController,
                   decoration: const InputDecoration(
                     labelText: 'Ad Soyad',
                     border: OutlineInputBorder(),
@@ -86,13 +83,13 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   },
                 ),
                 const SizedBox(height: 10),
-                TextFormField( // Changed to TextFormField
-                  controller: _kullaniciAdiController, // Linked controller
+                TextFormField(
+                  controller: _kullaniciAdiController,
                   decoration: const InputDecoration(
                     labelText: 'Kullanıcı Adı',
                     border: OutlineInputBorder(),
                   ),
-                   validator: (value) { // Added validator
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Lütfen kullanıcı adınızı girin';
                     }
@@ -100,8 +97,8 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   },
                 ),
                 const SizedBox(height: 10),
-                 TextFormField( // Changed to TextFormField
-                  controller: _emailController, // Linked controller
+                TextFormField(
+                  controller: _emailController,
                   decoration: const InputDecoration(
                     labelText: 'Mail Adresi',
                     border: OutlineInputBorder(),
@@ -118,12 +115,22 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   },
                 ),
                 const SizedBox(height: 10),
-                TextFormField( // Changed to TextFormField
-                  controller: _passwordController, // Linked controller
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
                     labelText: 'Parola',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -136,12 +143,22 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   },
                 ),
                 const SizedBox(height: 10),
-                 TextFormField( // Added Confirm Password field
+                TextFormField(
                   controller: _confirmPasswordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  obscureText: _obscureConfirmPassword,
+                  decoration: InputDecoration(
                     labelText: 'Parolayı Doğrula',
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
+                        });
+                      },
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -154,8 +171,8 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   },
                 ),
                 const SizedBox(height: 10),
-                TextFormField( // Changed to TextFormField
-                  controller: _telefonController, // Linked controller
+                TextFormField(
+                  controller: _telefonController,
                   decoration: const InputDecoration(
                     labelText: 'Telefon Numarası (Opsiyonel)',
                     border: OutlineInputBorder(),
@@ -163,83 +180,62 @@ class _PatiMembershipPageState extends State<PatiMembershipPage> { // Created St
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final String email = _emailController.text;
-                      final String password = _passwordController.text;
-                      // final String patiName = _patiAdiController.text; // For logging or other use
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        final String email = _emailController.text;
+                        final String password = _passwordController.text;
 
-                      // Note: confirmPassword check is already done by the validator
-                      // No need for these checks if form validation is active and includes them:
-                      // if (email.isEmpty || password.isEmpty /* || confirmPassword.isEmpty */) {
-                      //   if (!mounted) return;
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(content: Text('Lütfen tüm zorunlu alanları doldurun!')),
-                      //   );
-                      //   return;
-                      // }
-                      // if (password != _confirmPasswordController.text) { // Validator handles this
-                      //   if (!mounted) return;
-                      //   ScaffoldMessenger.of(context).showSnackBar(
-                      //     const SnackBar(content: Text('Parolalar eşleşmiyor!')),
-                      //   );
-                      //   return;
-                      // }
-
-                      User newUser = User(
-                        email: email,
-                        password: password,
-                        userType: 'pati',
-                      );
-
-                      try {
-                        DatabaseHelper dbHelper = DatabaseHelper();
-                        await dbHelper.insertUser(newUser);
-
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Pati üye kaydı başarılı: ${newUser.email}')),
+                        User newUser = User(
+                          email: email,
+                          password: password,
+                          userType: 'pati',
                         );
-                        Navigator.pushReplacementNamed(context, '/patitagram');
-                      } catch (e) {
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Kayıt sırasında bir hata oluştu: ${e.toString()}')),
-                        );
-                        if (e.toString().toLowerCase().contains('unique constraint failed')) {
+
+                        try {
+                          DatabaseHelper dbHelper = DatabaseHelper();
+                          await dbHelper.insertUser(newUser);
+
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Pati üye kaydı başarılı: ${newUser.email}')),
+                          );
+                          Navigator.pushReplacementNamed(context, '/patitagram');
+                        } catch (e) {
+                          if (!mounted) return;
+
+                          if (e.toString().toLowerCase().contains('unique constraint failed')) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Bu e-posta adresi zaten kayıtlı.')),
+                              const SnackBar(content: Text('Bu e-posta adresi zaten kayıtlı.')),
                             );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Kayıt sırasında bir hata oluştu: ${e.toString()}')),
+                            );
+                          }
                         }
                       }
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 235, 146, 176),
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 235, 146, 176),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Kayıt Ol',
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
                   ),
                 ),
-                child: const Text( // Added const
-                  'Kayıt Ol',
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
-
-// Placeholder for PatitagramPage removed as it's now imported.
-// class PatitagramPage extends StatelessWidget { 
-//   const PatitagramPage({super.key});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(appBar: AppBar(title: const Text("Patitagram Placeholder")));
-//   }
-// }

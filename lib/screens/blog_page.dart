@@ -1,33 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:pati_check/screens/blog_detail_page.dart'; // Added import
+import 'package:pati_check/screens/blog_detail_page.dart';
 
 class BlogPage extends StatelessWidget {
-  const BlogPage({super.key}); // Added super.key
+  const BlogPage({super.key});
 
-  // Blog yazıları için örnek veri
-  final List<Map<String, String>> blogPosts = const [ // Added const
+  final List<Map<String, String>> blogPosts = const [
+        {
+      'title': 'Kedilerde Kusma: Sebepleri ve Çözümleri',
+      'summary': 'Kediniz neden kusuyor? Ne zaman endişelenmelisiniz? İşte detaylar...',
+      'imageUrl': 'assets/images/5.png',
+      'author': 'Dr. Pati Sever',
+      'date': '15 Ekim 2023',
+    },
     {
       'title': 'Köpeklerde Davranış Sorunları ve Çözümleri',
       'summary': 'Köpeğinizin istenmeyen davranışlarını anlamak ve düzeltmek için ipuçları.',
-      'imageUrl': 'assets/images/blog1.png', // Placeholder image path
+      'imageUrl': 'assets/images/1.png',
       'author': 'Dr. Pati Sever',
       'date': '15 Ekim 2023',
     },
     {
       'title': 'Kediler İçin En İyi Beslenme Yöntemleri',
       'summary': 'Kedinizin sağlıklı ve mutlu kalması için doğru beslenme stratejileri.',
-      'imageUrl': 'assets/images/blog2.png', // Placeholder image path
+      'imageUrl': 'assets/images/8.png',
       'author': 'Prof. Miyav Uzmanı',
       'date': '22 Ekim 2023',
     },
     {
       'title': 'Evcil Hayvanlarla Seyahat Etmenin Püf Noktaları',
       'summary': 'Tüylü dostlarınızla stressiz bir yolculuk için bilmeniz gerekenler.',
-      'imageUrl': 'assets/images/blog3.png', // Placeholder image path
+      'imageUrl': 'assets/images/6.png',
       'author': 'Gezgin Patiler',
       'date': '28 Ekim 2023',
     },
-    // Daha fazla blog yazısı eklenebilir...
+
+    {
+      'title': 'Kedi ve Köpeklerde Mevsimsel Alerjiler',
+      'summary': 'Evcil hayvanlarınızda mevsim değişikliklerinden kaynaklanan alerji belirtileri ve çözümleri.',
+      'imageUrl': 'assets/images/11.png',
+      'author': 'Dr. Alerji Uzmanı',
+      'date': '12 Kasım 2023',
+    },
   ];
 
   @override
@@ -35,7 +48,7 @@ class BlogPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.pink[50],
       appBar: AppBar(
-        title: const Text('Pati Blog'), // Added const
+        title: const Text('Pati Blog'),
         backgroundColor: Colors.pink[100],
         elevation: 0,
       ),
@@ -44,23 +57,21 @@ class BlogPage extends StatelessWidget {
         itemBuilder: (context, index) {
           final post = blogPosts[index];
           return Card(
-            margin: const EdgeInsets.all(10.0), // Added const
+            margin: const EdgeInsets.all(10.0),
             elevation: 5,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)), // Added const for shape
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
             child: InkWell(
               onTap: () {
-                // Blog detay sayfasına navigasyon
-                // BlogDetailPage henüz projeye eklenmediği için bu kod hata verecektir.
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => BlogDetailPage(post: post)), // This will cause an error
+                  MaterialPageRoute(builder: (context) => BlogDetailPage(post: post)),
                 );
               },
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ClipRRect(
-                    borderRadius: const BorderRadius.only( // Added const
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(15.0),
                       topRight: Radius.circular(15.0),
                     ),
@@ -68,7 +79,7 @@ class BlogPage extends StatelessWidget {
                       post['imageUrl']!,
                       height: 200,
                       fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) { // Added errorBuilder
+                      errorBuilder: (context, error, stackTrace) {
                         return Container(
                           height: 200,
                           color: Colors.grey[300],
@@ -78,25 +89,25 @@ class BlogPage extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(15.0), // Added const
+                    padding: const EdgeInsets.all(15.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           post['title']!,
-                          style: const TextStyle( // Added const
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 8), // Added const
+                        const SizedBox(height: 8),
                         Text(
                           post['summary']!,
                           style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 10), // Added const
+                        const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -122,13 +133,3 @@ class BlogPage extends StatelessWidget {
     );
   }
 }
-
-// Placeholder for BlogDetailPage removed as it's now imported.
-// class BlogDetailPage extends StatelessWidget { 
-//   final Map<String, String> post;
-//   const BlogDetailPage({super.key, required this.post});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(appBar: AppBar(title: Text(post['title'] ?? "Blog Detail")));
-//   }
-// }

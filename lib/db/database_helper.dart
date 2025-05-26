@@ -2,6 +2,13 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert'; // for utf8
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+void initDatabaseFactory() {
+  // Bu satır sqflite_common_ffi kullanıyorsan zorunlu
+  databaseFactory = databaseFactoryFfi;
+}
+
 
 class User { // Basit bir User modeli, şimdilik burada tanımlayalım.
   final int? id;

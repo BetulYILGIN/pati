@@ -30,15 +30,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  sqflite: ^2.3.3 
-  path_provider: ^2.1.3 
-  crypto: ^3.0.3 
-  path: ^1.9.0 
-  google_fonts: ^6.2.1 # Updated
-  image_picker: ^1.1.0 # Updated
-  carousel_slider: ^4.2.1 # Version is already correct
-  
-  cupertino_icons: ^1.0.8 
+
+  sqflite: ^2.3.3
+  path_provider: ^2.1.3
+  crypto: ^3.0.3
+  path: ^1.9.0
+  google_fonts: ^6.2.1
+  image_picker: ^1.1.0
+  carousel_slider: ^5.0.0
+
+  cupertino_icons: ^1.0.8
+  sqflite_common_ffi: ^2.3.4+4
+
+  file_picker: ^6.1.1
+  shared_preferences: ^2.2.2
+
+  google_maps_flutter: ^2.2.3
+  geolocator: ^9.0.2
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:
@@ -56,7 +65,34 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  assets:
+    - assets/images/logo.png
+    - assets/images/walk.gif
+    - assets/images/unuttum.png
+    - assets/images/1.png
+    - assets/images/2.png
+    - assets/images/3.png
+    - assets/images/4.png
+    - assets/images/5.png
+    - assets/images/6.png
+    - assets/images/7.png
+    - assets/images/8.png
+    - assets/images/9.png
+    - assets/images/10.png
+    - assets/images/11.png
+    - assets/images/12.png
+    - assets/images/13.png
+    - assets/images/14.png
+    - assets/images/15.png
+    - assets/images/16.png
+    - assets/images/17.png
+    - assets/images/18.png
+    - assets/images/19.png
+    - assets/images/20.mp4
+    - assets/images/sayfa1.png
+    - assets/images/pati.png
+    - assets/images/klinik.png
+    
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

@@ -11,8 +11,13 @@ import 'package:pati_check/screens/forgot_password_page.dart'; // Bu da vardı
 import 'package:pati_check/screens/blog_page.dart';
 import 'package:pati_check/screens/blog_detail_page.dart'; // BlogPost modelini içeriyor
 import 'package:pati_check/screens/profile_page.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 void main() {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+  
   runApp(const PatiCheckApp());
 }
 

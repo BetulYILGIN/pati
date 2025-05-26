@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pati_check/screens/account_type_page.dart'; // Added import
-import 'package:pati_check/db/database_helper.dart'; // Added DatabaseHelper import
-import 'package:pati_check/screens/patitagram_page.dart'; // Added PatitagramPage import
-// import 'package:pati_check/screens/clinic_main_page.dart'; // Eğer klinik için ayrı bir ana sayfa olacaksa
+import 'package:pati_check/db/database_helper.dart';
+import 'package:pati_check/screens/patitagram_page.dart';
+import 'package:pati_check/screens/account_type_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +15,9 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // Parola gizleme durumu için değişken
+  bool _obscurePassword = true;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -23,8 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void _login() async { // Changed to async
-    // Using existing _emailController and _passwordController as per analysis
+  void _login() async {
     final String email = _emailController.text;
     final String password = _passwordController.text;
 
@@ -36,12 +37,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Form validation is good, but the provided snippet doesn't use _formKey.currentState.validate()
-    // If form validation is desired, it should be re-added here.
-    // if (!_formKey.currentState!.validate()) {
-    //   return;
-    // }
-
     DatabaseHelper dbHelper = DatabaseHelper();
     User? user = await dbHelper.loginUser(email, password);
 
@@ -51,16 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Giriş başarılı! Hoş geldiniz ${user.email}. Kullanıcı Türü: ${user.userType}')),
       );
-      // Kullanıcı türüne göre yönlendirme yapılabilir.
-      // Şimdilik tüm başarılı girişleri PatitagramPage'e yönlendirelim.
-      // if (user.userType == 'pati') {
       Navigator.pushReplacementNamed(context, '/patitagram');
-      // } else if (user.userType == 'klinik') {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(builder: (context) => const ClinicMainPage()), // Örnek klinik ana sayfası
-      //   );
-      // }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Giriş bilgileri hatalı veya kullanıcı bulunamadı.')),
@@ -71,8 +57,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.pink[50],
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 247, 114, 158),
         title: const Text('Login'),
+        leading: BackButton(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -81,15 +70,31 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              Image.asset(
+                'assets/images/logo.png',
+                width: 120,
+                height: 120,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Hoşgeldiniz',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'PatiCheck\'e giriş yap veya kaydol',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 32),
               TextFormField(
                 controller: _emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(
+                  labelText: 'Pati veya Klinik Adı',
+                  border: OutlineInputBorder(),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Please enter a valid email';
+                    return 'Lütfen kullanıcı adınızı girin';
                   }
                   return null;
                 },
@@ -97,30 +102,87 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
-                obscureText: true,
+                obscureText: _obscurePassword, // Gizleme durumu buraya bağlı
+                decoration: InputDecoration(
+                  labelText: 'Parola',
+                  border: const OutlineInputBorder(),
+                  // Parola göster/gizle ikonu
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword; // Durumu tersine çevir
+                      });
+                    },
+                  ),
+                ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
+                    return 'Lütfen parolanızı girin';
                   }
                   return null;
                 },
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      StatefulBuilder(
+                        builder: (context, setState) {
+                          bool rememberMe = false;
+                          return Checkbox(
+                            value: rememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                rememberMe = value ?? false;
+                              });
+                            },
+                          );
+                        },
+                      ),
+                      const Text('Beni Hatırla'),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/forgot_password');
+                    },
+                    child: const Text(
+                      'Parolamı Unuttum?',
+                      style: TextStyle(color: Colors.pink),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: _login,
-                child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 235, 146, 176),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  minimumSize: const Size(double.infinity, 50), // Genişlik: TextFormField ile aynı
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: const Text(
+                  'Giriş Yap',
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
-              const SizedBox(height: 20), // Added space
+              const SizedBox(height: 20),
               GestureDetector(
                 onTap: () {
-                  if (!mounted) return;
                   Navigator.pushNamed(context, '/account_type');
                 },
                 child: const Text(
-                  'Don\'t have an account? Create one',
+                  'Hesabınız yok mu? Hemen kaydolun',
                   style: TextStyle(
-                    color: Colors.pink, // Example color
+                    color: Colors.pink,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -132,6 +194,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
-// Placeholder for AccountTypePage to allow code to be structured.
-// Removed placeholder AccountTypePage class

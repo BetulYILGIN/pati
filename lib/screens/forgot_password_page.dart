@@ -1,21 +1,26 @@
-import 'package:flutter/material.dart'; // Added import
+import 'package:flutter/material.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
-  const ForgotPasswordPage({super.key}); // Added constructor with key
+  const ForgotPasswordPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.pink[50],
+      appBar: AppBar(
+        title: const Text('Şifre Sıfırlama'),
+        backgroundColor: const Color.fromARGB(255, 247, 114, 158),
+        leading: BackButton(), // İşte geri butonu burada
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/unuttum.png', width: 150, height: 150),
-              const SizedBox(height: 20), // Added const
-              const Text( // Added const
+              Image.asset('assets/images/unuttum.png', width: 150, height: 150), 
+              const SizedBox(height: 20),
+              const Text(
                 'Şifre Sıfırlama',
                 style: TextStyle(
                   fontSize: 24,
@@ -23,8 +28,8 @@ class ForgotPasswordPage extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 10), // Added const
-              const TextField( // Added const for TextField itself, assuming no controller for now
+              const SizedBox(height: 10),
+              TextField(
                 decoration: InputDecoration(
                   labelText: 'E-posta',
                   border: OutlineInputBorder(),
@@ -33,23 +38,25 @@ class ForgotPasswordPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20), // Added const
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Kod gönderme işlemleri
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Kod gönderildi!')),
+                  );
                 },
-                style: ElevatedButton.styleFrom( // Moved style before child
+                style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 235, 146, 176),
-                  padding: const EdgeInsets.symmetric(vertical: 15), // Added const
-                  minimumSize: const Size(double.infinity, 50), // Added const
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: const Text( // Added const
-                      'Kod Gönder',
-                      style: TextStyle(color: Colors.black),
-                      ),
+                child: const Text(
+                  'Kod Gönder',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ],
           ),

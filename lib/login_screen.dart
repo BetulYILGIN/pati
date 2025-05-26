@@ -1,155 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:pati_check/db/database_helper.dart'; // Corrected import path
-import 'package:crypto/crypto.dart';
-// import 'package:pati_check/screens/home_page.dart'; // Removed home_page.dart import
-import 'package:pati_check/screens/patitagram_page.dart'; // Added patitagram_page.dart import
-import 'dart:convert'; // for utf8
-// Note: account_type_page.dart import is not present in this file, which is fine as it's not used here.
+import '../db/database_helper.dart';  // Eğer User modeli ayrı dosyadaysa
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
+  final DatabaseHelper dbHelper = DatabaseHelper();
 
-  void _login() async { // Made async
-    if (_formKey.currentState!.validate()) {
-      String email = _emailController.text;
-      String password = _passwordController.text;
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
-      DatabaseHelper dbHelper = DatabaseHelper();
-      Map<String, dynamic>? user = await dbHelper.getUserByEmail(email);
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Lütfen e-posta ve şifre girin.')),
+      );
+      return;
+    }
 
-      // Genel if (!mounted) return; kaldırıldı.
+    User? user = await dbHelper.loginUser(email, password); // ✅ Değiştirildi
 
-      if (user == null) {
-        if (!mounted) return; // Spesifik kontrol
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Geçersiz e-posta veya şifre.')),
-        );
-      } else {
-        // Hash the entered password
-        var bytes = utf8.encode(password); // data being hashed
-        var digest = sha256.convert(bytes);
-        String hashedPassword = digest.toString();
-
-        // if (!mounted) return; // Buraya da eklenebilir ama yukarıdaki daha genel.
-        // Özellikle async olmayan crypto işlemi sonrası değil, context kullanan işlemlerden önce olmalı.
-        // Bu yüzden aşağıdaki if bloğundan önce olması daha mantıklı.
-
-        if (user['password'] != hashedPassword) {
-          if (!mounted) return; // Spesifik kontrol (ScaffoldMessenger öncesi)
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Geçersiz e-posta veya şifre.')),
-          );
-        } else {
-          if (!mounted) return; // Spesifik kontrol (ScaffoldMessenger için)
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Giriş başarılı! Hoş geldiniz ${user['email']}.')), // user['email'] kullanımı Map<String, dynamic> için doğru
-          );
-          // Navigator.pushReplacement( // ESKİ YANLIŞ KULLANIM
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const HomeScreen()),
-          // );
-          if (!mounted) return; // Navigator için ek kontrol
-          Navigator.pushReplacementNamed(context, '/patitagram'); // YENİ DOĞRU KULLANIM
-        }
-      }
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Geçersiz e-posta veya şifre.')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Giriş başarılı! Hoş geldiniz ${user.email}.')),
+      );
+      Navigator.pushReplacementNamed(context, '/patitagram');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pati Giriş'),
-      ),
+      appBar: AppBar(title: const Text('Giriş Yap')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'E-posta'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Lütfen e-postanızı girin';
-                  }
-                  if (!value.contains('@')) {
-                    return 'Geçerli bir e-posta girin';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Şifre'),
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Lütfen şifrenizi girin';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: _login,
-                child: const Text('Giriş Yap'),
-              ),
-              const SizedBox(height: 16), // Added space between buttons
-              ElevatedButton(
-                onPressed: () async {
-                  DatabaseHelper dbHelper = DatabaseHelper();
-                  Map<String, dynamic> user = {
-                    'email': 'test@example.com',
-                    // Hash the password before inserting
-                    'password': sha256.convert(utf8.encode('password123')).toString(),
-                  };
-                  try {
-                    await dbHelper.insertUser(user);
-                    // Genel if (!mounted) return; kaldırıldı.
-                    if (!mounted) return; // Spesifik kontrol
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Kullanıcı test@example.com eklendi.')),
-                    );
-                  } catch (e) {
-                    // Genel if (!mounted) return; kaldırıldı.
-                    // Check if the error is due to a unique constraint violation
-                    if (e.toString().contains('UNIQUE constraint failed')) {
-                      if (!mounted) return; // Spesifik kontrol
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Kullanıcı test@example.com zaten mevcut.')),
-                      );
-                    } else {
-                      if (!mounted) return; // Spesifik kontrol
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Kullanıcı eklenirken hata oluştu: $e')),
-                      );
-                    }
-                  }
-                },
-                child: const Text('Örnek Kullanıcı Oluştur'),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(labelText: 'E-posta'),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(labelText: 'Şifre'),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _login,
+              child: const Text('Giriş Yap'),
+            ),
+          ],
         ),
       ),
     );
