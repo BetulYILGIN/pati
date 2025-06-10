@@ -1,6 +1,11 @@
 {
+<<<<<<< HEAD
     "name": "paticheck",
     "short_name": "paticheck",
+=======
+    "name": "pati_check",
+    "short_name": "pati_check",
+>>>>>>> f7ce9e63f87b268cb1759d78e11278a11f50d5bc
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

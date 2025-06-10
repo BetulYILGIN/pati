@@ -90,12 +90,21 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
+<<<<<<< HEAD
             VALUE "FileDescription", "paticheck" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "paticheck" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "paticheck.exe" "\0"
             VALUE "ProductName", "paticheck" "\0"
+=======
+            VALUE "FileDescription", "pati_check" "\0"
+            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "InternalName", "pati_check" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
+            VALUE "OriginalFilename", "pati_check.exe" "\0"
+            VALUE "ProductName", "pati_check" "\0"
+>>>>>>> f7ce9e63f87b268cb1759d78e11278a11f50d5bc
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

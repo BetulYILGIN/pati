@@ -4,10 +4,17 @@ project(runner LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
+<<<<<<< HEAD
 set(BINARY_NAME "paticheck")
 # The unique GTK application identifier for this application. See:
 # https://wiki.gnome.org/HowDoI/ChooseApplicationID
 set(APPLICATION_ID "com.example.paticheck")
+=======
+set(BINARY_NAME "pati_check")
+# The unique GTK application identifier for this application. See:
+# https://wiki.gnome.org/HowDoI/ChooseApplicationID
+set(APPLICATION_ID "com.example.pati_check")
+>>>>>>> f7ce9e63f87b268cb1759d78e11278a11f50d5bc
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.

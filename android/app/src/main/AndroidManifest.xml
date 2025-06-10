@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="paticheck"
+=======
+        android:label="pati_check"
+>>>>>>> f7ce9e63f87b268cb1759d78e11278a11f50d5bc
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

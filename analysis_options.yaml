@@ -7,11 +7,14 @@
 
 # The following line activates a set of recommended lints for Flutter apps,
 # packages, and plugins designed to encourage good coding practices.
+<<<<<<< HEAD
 analyzer:
   errors:
     prefer_const_constructors: ignore 
     sort_child_properties_last: ignore
     use_key_in_widget_constructors: ignore
+=======
+>>>>>>> f7ce9e63f87b268cb1759d78e11278a11f50d5bc
 include: package:flutter_lints/flutter.yaml
 
 linter:
